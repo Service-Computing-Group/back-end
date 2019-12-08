@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"encoding/json"
@@ -39,6 +39,21 @@ func OpenDB(str string) {
 			return
 		}
 	}
+}
+
+func LoadData() {
+	catchStarships()
+	fmt.Println("starships = ", GetCount("starships"))
+	catchVehicles()
+	fmt.Println("vehicles = ", GetCount("vehicles"))
+	catchPlanets()
+	fmt.Println("planets = ", GetCount("planets"))
+	catchSpecies()
+	fmt.Println("species = ", GetCount("species"))
+	catchFilms()
+	fmt.Println("films = ", GetCount("films"))
+	catchPeople()
+	fmt.Println("people = ", GetCount("people"))
 }
 
 //1.get planets 1~61 共 61
@@ -174,7 +189,7 @@ func AddValue(bucketName []byte, key []byte, value []byte) bool {
 	return true
 }
 
-func getCount(str string) int {
+func GetCount(str string) int {
 	count := 0
 	db.View(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
@@ -188,28 +203,27 @@ func getCount(str string) int {
 	return count
 }
 
-func main() {
-	OpenDB("./test.db")
-
-	fmt.Println("starships = ", getCount("starships"))
-	fmt.Println("vehicles = ", getCount("vehicles"))
-	fmt.Println("planets = ", getCount("planets"))
-	fmt.Println("species = ", getCount("species"))
-	fmt.Println("films = ", getCount("films"))
-	fmt.Println("people = ", getCount("people"))
-
-	//已完成的
-	// catchStarships()
-	// fmt.Println("starships = ", getCount("starships"))
-	//catchVehicles()
-	//fmt.Println("vehicles = ", getCount("vehicles"))
-	//catchPlanets()
-	//fmt.Println("planets = ", getCount("planets"))
-	//catchSpecies()
-	//fmt.Println("species = ", getCount("species"))
-	//catchFilms()
-	//fmt.Println("films = ", getCount("films"))
-	//catchPeople()
-	//fmt.Println("people = ", getCount("people"))
-	db.Close()
-}
+//func main() {
+//	OpenDB("./test.db")
+//	fmt.Println("starships = ", GetCount("starships"))
+//	fmt.Println("vehicles = ", GetCount("vehicles"))
+//	fmt.Println("planets = ", GetCount("planets"))
+//	fmt.Println("species = ", GetCount("species"))
+//	fmt.Println("films = ", GetCount("films"))
+//	fmt.Println("people = ", GetCount("people"))
+//
+//	//已完成的
+//	// catchStarships()
+//	// fmt.Println("starships = ", GetCount("starships"))
+//	//catchVehicles()
+//	//fmt.Println("vehicles = ", GetCount("vehicles"))
+//	//catchPlanets()
+//	//fmt.Println("planets = ", GetCount("planets"))
+//	//catchSpecies()
+//	//fmt.Println("species = ", GetCount("species"))
+//	//catchFilms()
+//	//fmt.Println("films = ", GetCount("films"))
+//	//catchPeople()
+//	//fmt.Println("people = ", GetCount("people"))
+//	db.Close()
+//}

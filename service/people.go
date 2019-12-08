@@ -14,6 +14,7 @@ import (
 //handle a request with method GET and path "/api/".
 func peopleHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+		database.OpenDB("./src/github.com/Service-Computing-Group/back-end/database/test.db")
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		req.ParseForm()
@@ -27,9 +28,9 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc {
 			item := database.GetValue([]byte("people"), []byte(strconv.Itoa(i)))
 			if len(item) != 0 {
 				count++
-				if count > pagelen*(page-1) {
+				if count > 5*(page-1) {
 					w.Write([]byte(item))
-					if count >= pagelen*page || count >= database.GetBucketCount([]byte("people")) {
+					if count >= 5*page || count >= database.GetCount("people") {
 						break
 					}
 					w.Write([]byte(", \n"))
@@ -53,6 +54,6 @@ func getPeopleById(w http.ResponseWriter, req *http.Request) {
 }
 
 func peoplePagesHandler(w http.ResponseWriter, req *http.Request) {
-	data := database.GetBucketCount([]byte("people"))
+	data := database.GetCount("people")
 	w.Write([]byte(strconv.Itoa(data)))
 }

@@ -1,7 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
+	"path/filepath"
+
+	"github.com/Service-Computing-Group/back-end/service"
 
 	"github.com/spf13/pflag"
 )
@@ -16,6 +21,11 @@ func main() {
 		port = PORT
 	}
 
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(dir)
 	pPort := pflag.StringP("port", "p", PORT, "PORT for httpd listening")
 	pflag.Parse()
 	if len(*pPort) != 0 {
