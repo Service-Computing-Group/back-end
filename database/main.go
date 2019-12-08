@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/boltdb/bolt"
-	"github.com/leejarvis/swapi"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/boltdb/bolt"
+	"github.com/leejarvis/swapi"
 )
 
 var db *bolt.DB
@@ -40,14 +41,14 @@ func OpenDB(str string) {
 	}
 }
 
-//1.get planets 1~60 共 60
+//1.get planets 1~61 共 61
 func catchPlanets() {
 	//是连续的
-	for i := 1; i <= 60; i++ {
+	for i := 1; i <= 61; i++ {
 		planet, _ := swapi.GetPlanet(i)
-		if planet.Name == "" {
-			continue
-		}
+		// if planet.Name == "" {
+		// 	continue
+		// }
 		jsonStr, _ := json.Marshal(planet)
 		indexStr := strconv.Itoa(i)
 		if len(GetValue([]byte("planets"), []byte(indexStr))) == 0 {
@@ -191,15 +192,15 @@ func main() {
 	OpenDB("./test.db")
 
 	fmt.Println("starships = ", getCount("starships"))
-	fmt.Println("vehicles = ", getCount("vehicles"))	
+	fmt.Println("vehicles = ", getCount("vehicles"))
 	fmt.Println("planets = ", getCount("planets"))
 	fmt.Println("species = ", getCount("species"))
 	fmt.Println("films = ", getCount("films"))
 	fmt.Println("people = ", getCount("people"))
 
-	//已完成的		
+	//已完成的
 	// catchStarships()
-	// fmt.Println("starships = ", getCount("starships"))		
+	// fmt.Println("starships = ", getCount("starships"))
 	//catchVehicles()
 	//fmt.Println("vehicles = ", getCount("vehicles"))
 	//catchPlanets()
