@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/boltdb/bolt"
+	"github.com/leejarvis/swapi"
 	"log"
 	"os"
 	"strconv"
-
-	"github.com/boltdb/bolt"
-	"github.com/leejarvis/swapi"
 )
 
 var db *bolt.DB
