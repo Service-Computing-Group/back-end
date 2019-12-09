@@ -30,6 +30,7 @@ func filmsHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	if page == 0 || page >= (itemCount+pagelen-1)/pagelen+1 {
 		fmt.Println((itemCount+pagelen-1)/pagelen + 1)
+		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("404 Not Found!"))
 		return
 	}

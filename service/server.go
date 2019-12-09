@@ -45,6 +45,9 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 	//database.LoadData()
 	mx.HandleFunc("/api/", apiHandler(formatter)).Methods("GET")
 
+	mx.HandleFunc("/login", loginHandler).Methods("POST")
+	mx.HandleFunc("/register", registerHandler).Methods("POST")
+
 	mx.HandleFunc("/api/people/", peopleHandler).Methods("GET")
 	mx.HandleFunc("/api/people/{id}", getPeopleById).Methods("GET")
 	mx.HandleFunc("/api/test", testHandler).Methods("GET")
