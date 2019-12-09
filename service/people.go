@@ -1,11 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
-
-	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
@@ -18,25 +18,35 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		//req.ParseForm()
 		vals := req.URL.Query()
 		page := 1
-		w.Write([]byte("{\"result\" : \n["))
-		//if req.Form["page"] != nil {
-		//	page, _ = strconv.Atoi(req.Form["page"][0])
-		//}
+
+		itemCount := database.GetCount("people")
+
 		if vals["page"] != nil {
-			page, _ = strconv.Atoi(vals["page"][0])
-			fmt.Println(page)
+			var err error
+			page, err = strconv.Atoi(vals["page"][0])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v", vals)
+			}
 		}
+		if page == 0 || page >= (itemCount+pagelen-1)/pagelen+1 {
+			fmt.Println((itemCount+pagelen-1)/pagelen + 1)
+			w.Write([]byte("404 Not Found!"))
+			return
+		}
+		w.Write([]byte("{\n    \"count\" : "))
+		w.Write([]byte(strconv.Itoa(itemCount)))
+		w.Write([]byte(",\n    \"result\" : [\n"))
+
 		count := 0
-		for i := 1; ; i++ {
+		for i := 1; count < pagelen*page; i++ {
 			item := database.GetValue([]byte("people"), []byte(strconv.Itoa(i)))
 			if len(item) != 0 {
 				count++
-				if count > 5*(page-1) {
+				if count > 10*(page-1) {
 					w.Write([]byte(item))
-					if count >= 5*page || count >= database.GetCount("people") {
+					if count >= pagelen*page || count >= database.GetCount("people") {
 						break
 					}
 					w.Write([]byte(", \n"))

@@ -7,9 +7,13 @@ import (
 
 	"github.com/leejarvis/swapi"
 
-	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
+	"github.com/urfave/negroni"
+)
+
+const (
+	pagelen = 10
 )
 
 func NewServer() *negroni.Negroni {
