@@ -14,14 +14,14 @@ import (
 )
 
 //handle a request with method GET and path "/api/".
-func peopleHandler(formatter *render.Render) http.HandlerFunc {
+func vehiclesHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		vals := req.URL.Query()
 		page := 1
 
-		itemCount := database.GetCount("people")
+		itemCount := database.GetCount("vehicles")
 
 		if vals["page"] != nil {
 			var err error
@@ -41,12 +41,12 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc {
 
 		count := 0
 		for i := 1; count < pagelen*page; i++ {
-			item := database.GetValue([]byte("people"), []byte(strconv.Itoa(i)))
+			item := database.GetValue([]byte("vehicles"), []byte(strconv.Itoa(i)))
 			if len(item) != 0 {
 				count++
 				if count > 10*(page-1) {
 					w.Write([]byte(item))
-					if count >= pagelen*page || count >= database.GetCount("people") {
+					if count >= pagelen*page || count >= database.GetCount("vehicles") {
 						break
 					}
 					w.Write([]byte(", \n"))
@@ -57,14 +57,14 @@ func peopleHandler(formatter *render.Render) http.HandlerFunc {
 	}
 }
 
-func getPeopleById(w http.ResponseWriter, req *http.Request) {
+func getVehicleById(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	_, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	data := database.GetValue([]byte("people"), []byte(vars["id"]))
+	data := database.GetValue([]byte("vehicles"), []byte(vars["id"]))
 	//判断是否存在此数据，否则404
 	if data == "" {
 		w.WriteHeader(http.StatusNotFound)
@@ -75,7 +75,7 @@ func getPeopleById(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func peoplePagesHandler(w http.ResponseWriter, req *http.Request) {
-	data := database.GetCount("people")
+func vehiclesPagesHandler(w http.ResponseWriter, req *http.Request) {
+	data := database.GetCount("vehicles")
 	w.Write([]byte(strconv.Itoa(data)))
 }

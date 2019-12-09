@@ -43,11 +43,33 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 		}
 	}
 	//database.LoadData()
+	mx.HandleFunc("/api", apiHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/", apiHandler(formatter)).Methods("GET")
 
 	mx.HandleFunc("/api/people", peopleHandler(formatter)).Methods("GET")
 	mx.HandleFunc("/api/people/", peopleHandler(formatter)).Methods("GET")
 	mx.HandleFunc("/api/people/{id}", getPeopleById).Methods("GET")
 	mx.HandleFunc("/api/test", testHandler).Methods("GET")
+
+	mx.HandleFunc("/api/films", filmsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/films/", filmsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/films/{id}", getFilmById).Methods("GET")
+
+	mx.HandleFunc("/api/planets", planetsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/planets/", planetsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/planets/{id}", getPlanetById).Methods("GET")
+
+	mx.HandleFunc("/api/starships", starshipsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/starships/", starshipsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/starships/{id}", getStarshipById).Methods("GET")
+
+	mx.HandleFunc("/api/species", speciesHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/species/", speciesHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/species/{id}", getSpecieById).Methods("GET")
+
+	mx.HandleFunc("/api/vehicles", vehiclesHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/vehicles/", vehiclesHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/api/vehicles/{id}", getVehicleById).Methods("GET")
 }
 
 func testHandler(w http.ResponseWriter, req *http.Request) {
