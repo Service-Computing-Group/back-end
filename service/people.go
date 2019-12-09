@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"fmt"
+
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
@@ -14,14 +16,18 @@ import (
 //handle a request with method GET and path "/api/".
 func peopleHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		database.OpenDB("./src/github.com/Service-Computing-Group/back-end/database/test.db")
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		req.ParseForm()
+		//req.ParseForm()
+		vals := req.URL.Query()
 		page := 1
 		w.Write([]byte("{\"result\" : \n["))
-		if req.Form["page"] != nil {
-			page, _ = strconv.Atoi(req.Form["page"][0])
+		//if req.Form["page"] != nil {
+		//	page, _ = strconv.Atoi(req.Form["page"][0])
+		//}
+		if vals["page"] != nil {
+			page, _ = strconv.Atoi(vals["page"][0])
+			fmt.Println(page)
 		}
 		count := 0
 		for i := 1; ; i++ {
