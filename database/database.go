@@ -37,6 +37,8 @@ func OpenDB(str string) {
 			tx.CreateBucketIfNotExists([]byte("starships"))
 			tx.CreateBucketIfNotExists([]byte("people"))
 			tx.CreateBucketIfNotExists([]byte("films"))
+
+			tx.CreateBucketIfNotExists([]byte("users"))
 			return nil
 		})
 		if err != nil {

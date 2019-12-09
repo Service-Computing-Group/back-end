@@ -7,54 +7,50 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/gorilla/mux"
-	"github.com/unrolled/render"
-
 	"github.com/Service-Computing-Group/back-end/database"
+	"github.com/gorilla/mux"
 )
 
 //handle a request with method GET and path "/api/".
-func speciesHandler(formatter *render.Render) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		vals := req.URL.Query()
-		page := 1
+func speciesHandler(w http.ResponseWriter, req *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	vals := req.URL.Query()
+	page := 1
 
-		itemCount := database.GetCount("species")
+	itemCount := database.GetCount("species")
 
-		if vals["page"] != nil {
-			var err error
-			page, err = strconv.Atoi(vals["page"][0])
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "%v", vals)
-			}
+	if vals["page"] != nil {
+		var err error
+		page, err = strconv.Atoi(vals["page"][0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v", vals)
 		}
-		if page == 0 || page >= (itemCount+pagelen-1)/pagelen+1 {
-			fmt.Println((itemCount+pagelen-1)/pagelen + 1)
-			w.Write([]byte("404 Not Found!"))
-			return
-		}
-		w.Write([]byte("{\n    \"count\" : "))
-		w.Write([]byte(strconv.Itoa(itemCount)))
-		w.Write([]byte(",\n    \"result\" : [\n"))
-
-		count := 0
-		for i := 1; count < pagelen*page; i++ {
-			item := database.GetValue([]byte("species"), []byte(strconv.Itoa(i)))
-			if len(item) != 0 {
-				count++
-				if count > 10*(page-1) {
-					w.Write([]byte(item))
-					if count >= pagelen*page || count >= database.GetCount("species") {
-						break
-					}
-					w.Write([]byte(", \n"))
-				}
-			}
-		}
-		w.Write([]byte("]\n}"))
 	}
+	if page == 0 || page >= (itemCount+pagelen-1)/pagelen+1 {
+		fmt.Println((itemCount+pagelen-1)/pagelen + 1)
+		w.Write([]byte("404 Not Found!"))
+		return
+	}
+	w.Write([]byte("{\n    \"count\" : "))
+	w.Write([]byte(strconv.Itoa(itemCount)))
+	w.Write([]byte(",\n    \"result\" : [\n"))
+
+	count := 0
+	for i := 1; count < pagelen*page; i++ {
+		item := database.GetValue([]byte("species"), []byte(strconv.Itoa(i)))
+		if len(item) != 0 {
+			count++
+			if count > 10*(page-1) {
+				w.Write([]byte(item))
+				if count >= pagelen*page || count >= database.GetCount("species") {
+					break
+				}
+				w.Write([]byte(", \n"))
+			}
+		}
+	}
+	w.Write([]byte("]\n}"))
 }
 
 func getSpecieById(w http.ResponseWriter, req *http.Request) {
@@ -71,11 +67,7 @@ func getSpecieById(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte("404 Not Found!"))
 	} else {
 		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write([]byte(data))
 	}
-}
-
-func speciesPagesHandler(w http.ResponseWriter, req *http.Request) {
-	data := database.GetCount("species")
-	w.Write([]byte(strconv.Itoa(data)))
 }
